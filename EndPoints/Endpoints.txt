@@ -1,0 +1,185 @@
+1- api url : https://localhost:7095/api/Ecom/GetAllProducts
+Method Type - GET
+Response:{
+    "productId": 1,
+    "productCode": "95c4e",
+    "name": "DellLaptop1",
+    "price": 700008,
+    "category": "Electric",
+    "color": "Black",
+    "description": "Good Quality",
+    "imageLink": "https://m.media-amazon.com/images/I/810mOX5-LyL._AC_.jpg",
+    "availQuantity": 15
+  }
+===================================================
+
+2- api url:https://localhost:7095/api/Ecom/GetProductById?ProductId=4
+Method Type - GET
+response:
+{
+  "productId": 4,
+  "productCode": "P4",
+  "name": "tractor",
+  "price": 2000,
+  "category": "toy",
+  "color": "red",
+  "description": "Good",
+  "imageLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXnPc5AafbXpfY6q1y9k0taeBJqvV9hmobuA&s",
+  "availQuantity": 12
+}
+=================================================
+
+3- api url:https://localhost:7095/api/Ecom/CreateProduct
+Method Type - POST
+request: 
+{
+  "name": "Bat",
+  "price": 1000,
+  "category": "4",
+  "color": "red",
+  "description": "Good",
+  "imageLink": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTAx8-bXeRTVHP3SaG5Xw_LJcOJpLGpFq4FRy8uovnAgU63x2JFcI60hvzhMyWnJIGaQw_xubu5zmclIvbdaKpaFzrQ_dOZHDx77RNYfHhPv7UC8yjJVCvfI5E",
+  "availQuantity": 10
+}
+Response:{
+  "productId": 50,
+  "productCode": "BA4X36857F",
+  "name": "Bat",
+  "price": 1000,
+  "category": "4",
+  "color": "red",
+  "description": "Good",
+  "imageLink": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTAx8-bXeRTVHP3SaG5Xw_LJcOJpLGpFq4FRy8uovnAgU63x2JFcI60hvzhMyWnJIGaQw_xubu5zmclIvbdaKpaFzrQ_dOZHDx77RNYfHhPv7UC8yjJVCvfI5E",
+  "availQuantity": 10
+},
+==============================================
+
+4- api url:https://localhost:7095/api/Ecom/UpdateProduct
+Method Type - PUT
+request: {
+  "productId": 4,
+  "name": "tractor",
+  "price": 2000,
+  "category": "toy",
+  "color": "red",
+  "description": "Good",
+  "imageLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXnPc5AafbXpfY6q1y9k0taeBJqvV9hmobuA&s",
+  "availQuantity": 12
+}
+Response:{
+  "productId": 4,
+  "productCode": "e8fbzJ3",
+  "name": "tractor",
+  "price": 2000,
+  "category": "toy",
+  "color": "red",
+  "description": "Good",
+  "imageLink": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXnPc5AafbXpfY6q1y9k0taeBJqvV9hmobuA&s",
+  "availQuantity": 12
+}
+=================================================
+
+5- api url:https://localhost:7095/api/Ecom/DeleteProductById?productId=10
+Method Type - DELETE 
+Response:true
+====================================================
+
+6- api url:https://localhost:7095/api/Ecom/register
+Method Type - POST
+request: {
+  "email": "user@example.com",
+  "name": "User",
+  "password": "1234",
+  "userType": "buyer"
+}
+Response:{
+  "id": 10,
+  "email": "user@example.com",
+  "userType": "buyer"
+}
+=====================================================
+
+7- api url:https://localhost:7095/api/Ecom/login
+Method Type - POST
+request: {
+  "email": "cheeta@gmail.com",
+  "password": "1234",
+  "userType": "buyer"
+}
+Response:{
+  "userId": 3,
+  "userName": "Cheeta",
+  "isValid": true,
+  "cartCount": 1
+}
+==============================================
+
+8- api url:https://localhost:7095/api/ECart/AddUpdateToCart
+Method Type - POST
+request: 
+{
+  "userId": 3,
+  "productId": 2,`
+  "quantity": 3
+}
+Response:
+{
+  "message": "Item added to cart"
+}
+
+=======================================
+
+9- api url:https://localhost:7095/api/ECart/GetCart?userId=3
+Method Type - GET
+Response:[
+  {
+    "cartItemId": 48,
+    "productId": 37,
+    "quantity": 1,
+    "price": 800,
+    "totalPrice": 800,
+    "imageLink": "https://th.bing.com/th/id/OPAC.TzIIvNveGmet9w474C474?w=592&h=550&o=5&dpr=1.5&pid=21.1"
+  }
+]
+==============================================
+10- api url:https://localhost:7095/api/ECart/RemoveCartItem?userId=2&productId=12
+Method Type - DELETE
+request: {
+  "userId": 3,
+  "productId": 12,
+  "quantity": 12
+}
+Response:Remove Item
+
+api url:https://localhost:7095/api/ECart/RemoveCartItem?userId=2&productId=12
+Method Type - DELETE
+request: {
+  "userId": 3,
+  "productId": 12,
+  "quantity": 12
+}
+Response:Item not found
+=============================================
+11 - API url - https://localhost:7095/api/ECart/CleareCart?userId=3
+Method Type - DELETE
+Response 
+{
+  "message": "Cart cleared"
+}
+===============================================
+12 - Api URL - https://localhost:7095/api/Ecom/Search?search=ipho
+Method Typd - Get
+Response - 
+[
+  {
+    "productId": 2,
+    "productCode": "zzZgHPC",
+    "name": "IPhone",
+    "price": 100000,
+    "category": "Category",
+    "color": "White",
+    "description": "Good quality",
+    "imageLink": "https://m.media-amazon.com/images/I/31Q14qzdoZL._SY300_SX300_QL70_FMwebp_.jpg",
+    "availQuantity": 0
+  }
+]
