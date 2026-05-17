@@ -1,11 +1,10 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 
-using System.ComponentModel.DataAnnotations;
-
-namespace ProductManagementApi.Models.ECartModel
+namespace ProductManagementApi.Models.Database
 {
-    public class CartItem
+    public class CartItems
     {
+        [Key]
         public int CartItemId { get; set; }
         public int CartId { get; set; }
         public int ProductId { get; set; }

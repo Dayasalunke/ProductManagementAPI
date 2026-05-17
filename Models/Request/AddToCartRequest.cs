@@ -1,4 +1,4 @@
-﻿namespace ProductManagementApi.Models.DTO.ECartDto.Request
+﻿namespace ProductManagementApi.Models.Request
 {
     public class AddToCartRequest
     {

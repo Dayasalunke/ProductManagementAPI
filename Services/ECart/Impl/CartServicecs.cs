@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ProductManagementApi.Models.DTO.ECartDto.Request;
-using ProductManagementApi.Models.DTO.ECartDto.Response;
-using ProductManagementApi.Models.ECartModel;
+using ProductManagementApi.Models.Request;
+using ProductManagementApi.Models.Response;
 using ProductManagementApi.Repositories.ECart;
 using System.Security.Cryptography.X509Certificates;
 namespace ProductManagementApi.Services.ECart.Impl
@@ -16,8 +15,8 @@ namespace ProductManagementApi.Services.ECart.Impl
             _cartRepository = cartRepository;
         }
 
-        public Task<bool> AddUpdateToCartAsync(AddToCartRequest request, CancellationToken ct)
-            => _cartRepository.AddUpdateToCartAsync(request, ct);
+        public Task<bool> AddUpdateToCartAsync(AddToCartRequest addToCartRequest, CancellationToken ct)
+            => _cartRepository.AddUpdateToCartAsync(addToCartRequest, ct);
 
         public Task<List<CartItemResponse>> GetCartItemsAsync(int userId, CancellationToken ct)
             => _cartRepository.GetCartItemsAsync(userId, ct);
@@ -25,8 +24,8 @@ namespace ProductManagementApi.Services.ECart.Impl
         public Task<bool> RemoveFromCartAsync(int userId, int productId, CancellationToken ct)
             => _cartRepository.RemoveFromCartAsync(userId, productId, ct);
 
-        public Task<bool> UpdateQuantityAsync(UpdateCartRequest request, CancellationToken ct)
-            => _cartRepository.UpdateQuantityAsync(request, ct);
+        public Task<bool> UpdateQuantityAsync(UpdateCartRequest updateCartRequest, CancellationToken ct)
+            => _cartRepository.UpdateQuantityAsync(updateCartRequest, ct);
 
         public Task<bool> ClearCartAsync(int userId, CancellationToken ct)
             => _cartRepository.ClearCartAsync(userId, ct);

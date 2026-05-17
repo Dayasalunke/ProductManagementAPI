@@ -1,4 +1,4 @@
-﻿namespace ProductManagementApi.Models.DTO.ECartDto.Response
+﻿namespace ProductManagementApi.Models.Response
 {
     public class CartItemResponse
     {

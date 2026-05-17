@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductManagementApi.Models.DTO.AuthDto;
-using ProductManagementApi.Models.DTO.LoginceResponceDto;
-using ProductManagementApi.Models.DTO.ProductDto;
-using ProductManagementApi.Models.ProductModel;
-using ProductManagementApi.Models.user;
+using ProductManagementApi.Models.Database;
+using ProductManagementApi.Models.Request;
+using ProductManagementApi.Models.Response;
 
 namespace ProductManagementApi.Repositories.Ecom.Impl
 {
@@ -54,35 +52,48 @@ namespace ProductManagementApi.Repositories.Ecom.Impl
                   })
                   .FirstOrDefaultAsync(p => p.ProductId == id, cancellationToken);
         }
-        public async Task<ProductResponse> CreateProductAsync(ProductCreateDto dto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> CreateProductAsync(ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
         {
-            var product = new Product
+            Products products = new Products
             {
-                Name = dto.Name,
-                ProductCode = GenerateProductCode(dto.Name, dto.Category),
-                Price = dto.Price,
-                Category = dto.Category,
-                Color = dto.Color,
-                Description = dto.Description,
-                ImageLink = dto.ImageLink,
-                AvailQuantity = dto.AvailQuantity
-
+                Name = productCreateRequest.Name,
+                ProductCode = GenerateProductCode(productCreateRequest.Name, productCreateRequest.Category),
+                Price = productCreateRequest.Price,
+                Category = productCreateRequest.Category,
+                Color = productCreateRequest.Color,
+                Description = productCreateRequest.Description,
+                ImageLink = productCreateRequest.ImageLink,
+                AvailQuantity = productCreateRequest.AvailQuantity
             };
-            _context.Products.Add(product);
+
+            //ORRRRRRRR OLD IMPLIMENTATION
+            //Products products = new Products();
+            //products.Name = productCreateRequest.Name;
+            //products.ProductCode = GenerateProductCode(productCreateRequest.Name, productCreateRequest.Category);
+            //products.Price = productCreateRequest.Price;
+            //products.Category = productCreateRequest.Category;
+            //products.Color = productCreateRequest.Color;
+            //products.Description = productCreateRequest.Description;
+            //products.ImageLink = productCreateRequest.ImageLink;
+            //products.AvailQuantity = productCreateRequest.AvailQuantity;
+            //ORRRRRRRR IMPLIMENTATION
+
+            _context.Products.Add(products);
             await _context.SaveChangesAsync();
 
-            return new ProductResponse
-            {
-                ProductId = product.ProductId,
-                ProductCode = product.ProductCode,
-                Name = product.Name,
-                Price = product.Price,
-                Category = product.Category,
-                Color = product.Color,
-                Description = product.Description,
-                ImageLink = product.ImageLink,
-                AvailQuantity = product.AvailQuantity
-            };
+            ProductResponse productResponse = new();
+
+            productResponse.ProductId = products.ProductId;
+            productResponse.ProductCode = products.ProductCode;
+            productResponse.Name = products.Name;
+            productResponse.Price = products.Price;
+            productResponse.Category = products.Category;
+            productResponse.Color = products.Color;
+            productResponse.Description = products.Description;
+            productResponse.ImageLink = products.ImageLink;
+            productResponse.AvailQuantity = products.AvailQuantity;
+           
+            return productResponse;
         }
         private string GenerateProductCode(string name, string category)
         {
@@ -102,26 +113,25 @@ namespace ProductManagementApi.Repositories.Ecom.Impl
 
             return $"{namePart}{categoryPart}{uniquePart}";
         }
-        public async Task<ProductResponse?> UpdateProductAsync(ProductUpdateDto dto, CancellationToken cancellationToken)
+        public async Task<ProductResponse?> UpdateProductAsync(ProductUpdateRequest productUpdateRequest, CancellationToken cancellationToken)
         {
             var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == dto.productId, cancellationToken);
+                .FirstOrDefaultAsync(p => p.ProductId == productUpdateRequest.productId, cancellationToken);
             if (product == null)
                 return null;
 
-
             //update fields
-            product.Name = dto.Name!;
-            product.Price = dto.Price;
-            product.Category = dto.Category;
-            product.Color = dto.Color;
-            product.Description = dto.Description;
-            product.ImageLink = dto.ImageLink;
-            product.AvailQuantity = dto.AvailQuantity;
+            product.Name = productUpdateRequest.Name!;
+            product.Price = productUpdateRequest.Price;
+            product.Category = productUpdateRequest.Category;
+            product.Color = productUpdateRequest.Color;
+            product.Description = productUpdateRequest.Description;
+            product.ImageLink = productUpdateRequest.ImageLink;
+            product.AvailQuantity = productUpdateRequest.AvailQuantity;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return new ProductResponse
+            ProductResponse productResponse = new()
             {
                 ProductId = product.ProductId,
                 ProductCode = product.ProductCode!,
@@ -133,6 +143,8 @@ namespace ProductManagementApi.Repositories.Ecom.Impl
                 ImageLink = product.ImageLink,
                 AvailQuantity = product.AvailQuantity
             };
+
+            return productResponse;
         }
         public async Task<bool> DeleteProductAsync(int id, CancellationToken cancellationToken)
         {
@@ -175,13 +187,28 @@ namespace ProductManagementApi.Repositories.Ecom.Impl
                 CartCount = cartItemCount
             };
         }
-        public async Task<Users> AddUserAsync(Users user, CancellationToken ct)
+        public async Task<UsersResponse> AddUserAsync(UsersRequest usersRequest, CancellationToken ct)
         {
-            _context.Users.Add(user);
+            Users users = new Users
+            {
+                Name = usersRequest.Name,
+                Email = usersRequest.Email,
+                Password = usersRequest.Password,
+                UserType = usersRequest.UserType
+            };
+            _context.Users.Add(users);
             await _context.SaveChangesAsync(ct);
-            return user;
+            UsersResponse usersResponse = new UsersResponse
+            {
+                UserId = users.UserId,
+                Name = users.Name,
+                Email = users.Email,
+                Password = users.Password,
+                UserType = users.UserType
+            };
+            return usersResponse;
         }
-        public async Task<List<Product>> SearchProductAsync(string? search, CancellationToken ct)
+        public async Task<List<ProductResponse>> SearchProductAsync(string? search, CancellationToken ct)
         {
             var query = _context.Products.AsQueryable();
 
@@ -195,9 +222,24 @@ namespace ProductManagementApi.Repositories.Ecom.Impl
                 EF.Functions.Like(p.Description, $"%{search}%")
                 );
             }
-            return await query
+            var products = await query
                 .OrderByDescending(p => p.ProductId)
                 .ToListAsync(ct);
+
+            var productResponses = products.Select(p => new ProductResponse
+            {
+                ProductId = p.ProductId,
+                ProductCode = p.ProductCode!,
+                Name = p.Name,
+                Price = p.Price,
+                Category = p.Category,
+                Color = p.Color,
+                Description = p.Description,
+                ImageLink = p.ImageLink,
+                AvailQuantity = p.AvailQuantity
+            }).ToList();
+
+            return productResponses;
         }
 
         // ================= PRIVATE METHOD =================

@@ -1,12 +1,16 @@
-using ProductManagementApi.Repositories;
 using Microsoft.EntityFrameworkCore;
-using ProductManagementApi.Services.Ecom;
-using ProductManagementApi.Repositories.Ecom;
-using ProductManagementApi.Services.Ecom.Impl;
-using ProductManagementApi.Repositories.Ecom.Impl;
-using ProductManagementApi.Services.ECart;
+using ProductManagementApi.Repositories;
 using ProductManagementApi.Repositories.ECart;
+using ProductManagementApi.Repositories.Ecom;
+using ProductManagementApi.Repositories.Ecom.Impl;
+using ProductManagementApi.Repositories.Order;
+using ProductManagementApi.Repositories.Order.Impl;
+using ProductManagementApi.Services.ECart;
 using ProductManagementApi.Services.ECart.Impl;
+using ProductManagementApi.Services.Ecom;
+using ProductManagementApi.Services.Ecom.Impl;
+using ProductManagementApi.Services.Order;
+using ProductManagementApi.Services.Order.Impl;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +24,8 @@ builder.Services.AddScoped<IEcomService, EcomService>();
 builder.Services.AddScoped<IEcomRepository, EcomRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICartReposetory, CartReposetory>();
-
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderReposetory, OrderReposetory>();
 // 🔹 Database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(

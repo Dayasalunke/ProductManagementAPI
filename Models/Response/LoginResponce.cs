@@ -1,4 +1,4 @@
-﻿namespace ProductManagementApi.Models.DTO.LoginceResponceDto
+﻿namespace ProductManagementApi.Models.Response
 {
     public class LoginResponce
     {

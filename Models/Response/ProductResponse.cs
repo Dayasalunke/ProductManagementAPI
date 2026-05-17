@@ -1,7 +1,9 @@
-﻿namespace ProductManagementApi.Models.DTO.ProductDto
+﻿namespace ProductManagementApi.Models.Response
 {
-    public class ProductCreateDto
+    public class ProductResponse
     {
+        public int ProductId { get; set; }
+        public string ProductCode { get; set; } = ""; // Custom (P1, P2...)
         public string Name { get; set; } = "";
         public decimal Price { get; set; }
         public string Category { get; set; } = "";

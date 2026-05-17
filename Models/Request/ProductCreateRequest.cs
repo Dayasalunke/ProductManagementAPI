@@ -1,9 +1,8 @@
-﻿namespace ProductManagementApi.Models.DTO.ProductDto
+﻿namespace ProductManagementApi.Models.Request
 {
-    public class ProductUpdateDto
+    public class ProductCreateRequest
     {
-        public int productId { get; set; }
-        public string? Name { get; set; } = ""; 
+        public string Name { set; get;  } = "";
         public decimal Price { get; set; }
         public string Category { get; set; } = "";
         public string Color { get; set; } = "";

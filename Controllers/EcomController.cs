@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProductManagementApi.Models.DTO.AuthDto;
-using ProductManagementApi.Models.DTO.LoginceResponceDto;
-using ProductManagementApi.Models.DTO.ProductDto;
-
+using ProductManagementApi.Models.Request;
 using ProductManagementApi.Services.Ecom;
 
 namespace ProductManagementApi.Controllers
@@ -19,9 +16,10 @@ namespace ProductManagementApi.Controllers
             _ecomService = ecomService;
             _logger = logger;
         }
+
         //Get All Products
         [HttpGet("GetAllProducts")]
-        public async Task<IActionResult> GetAllProducts(CancellationToken cancellationToken = default)
+        public async Task<ActionResult> GetAllProducts(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -49,20 +47,20 @@ namespace ProductManagementApi.Controllers
 
         //Add a product 
         [HttpPost("CreateProduct")]
-        public async Task<IActionResult> CreatProductAsync([FromBody] ProductCreateDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateProductAsync([FromBody] ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
         {
-            var result = await _ecomService.CreateProductAsync(dto, cancellationToken);
+            var result = await _ecomService.CreateProductAsync(productCreateRequest, cancellationToken);
             return Ok(result);
         }
 
         //Update Product
         [HttpPut("UpdateProduct")]
-        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductUpdateDto dto, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductUpdateRequest productUpdateRequest, CancellationToken cancellationToken)
         {
-            var result = await _ecomService.UpdateProductAsync(dto, cancellationToken);
+            var result = await _ecomService.UpdateProductAsync(productUpdateRequest, cancellationToken);
             if (result == null)
             {
-                return NotFound($"product with id {dto.productId} not Found");
+                return NotFound($"product with id {productUpdateRequest.productId} not Found");
             }
             return Ok(result);
         }
@@ -79,17 +77,17 @@ namespace ProductManagementApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken ct)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest, CancellationToken ct)
         {
-            var result = await _ecomService.RegisterAsync(request, ct);
+            var result = await _ecomService.RegisterAsync(registerRequest, ct);
             return Ok(result);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request, CancellationToken ct)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequest loginRequest, CancellationToken ct)
         {
-           
-            var result = await _ecomService.LoginAsync(request, ct);
+
+            var result = await _ecomService.LoginAsync(loginRequest, ct);
 
             return Ok(result); //return full object
         }

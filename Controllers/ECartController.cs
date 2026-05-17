@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProductManagementApi.Models.DTO.ECartDto.Request;
+using ProductManagementApi.Models.Request;
 using ProductManagementApi.Services.ECart;
 
 namespace ProductManagementApi.Controllers
@@ -18,9 +18,9 @@ namespace ProductManagementApi.Controllers
 
         //Add to cart
         [HttpPost("AddUpdateToCart")]
-        public async Task<IActionResult> AddUpdateToCartAsync([FromBody] AddToCartRequest request, CancellationToken ct)
+        public async Task<IActionResult> AddUpdateToCartAsync([FromBody] AddToCartRequest addToCartRequest, CancellationToken ct)
         {
-            var result = await _cartService.AddUpdateToCartAsync(request, ct);
+            var result = await _cartService.AddUpdateToCartAsync(addToCartRequest, ct);
 
             if (!result)
                 return BadRequest("Product or User not found");
@@ -54,7 +54,7 @@ namespace ProductManagementApi.Controllers
         }
 
         //Remove item
-        [HttpDelete("RemoveItem")]
+        [HttpDelete("RemoveCartItem")]
         public async Task<IActionResult> RemoveFromCartAsync(int userId, int productId, CancellationToken ct)
         {
             var result = await _cartService.RemoveFromCartAsync(userId, productId, ct);
@@ -67,9 +67,9 @@ namespace ProductManagementApi.Controllers
 
         //Update quantity
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateQuantityAsync([FromBody] UpdateCartRequest request, CancellationToken ct)
+        public async Task<IActionResult> UpdateQuantityAsync([FromBody] UpdateCartRequest updateCartRequest, CancellationToken ct)
         {
-            var result = await _cartService.UpdateQuantityAsync(request, ct);
+            var result = await _cartService.UpdateQuantityAsync(updateCartRequest, ct);
 
             if (!result)
                 return NotFound("Item not found");

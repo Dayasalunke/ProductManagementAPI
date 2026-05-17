@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using ProductManagementApi.Models.DTO.ECartDto.Request;
-using ProductManagementApi.Models.DTO.ECartDto.Response;
-using ProductManagementApi.Models.ECartModel;
+using ProductManagementApi.Models.Database;
 using ProductManagementApi.Models.Enum;
-using ProductManagementApi.Models.user;
+using ProductManagementApi.Models.Request;
+using ProductManagementApi.Models.Response;
 
 namespace ProductManagementApi.Repositories.ECart
 {
@@ -16,24 +15,24 @@ namespace ProductManagementApi.Repositories.ECart
         {
             _context = context;
         }
-        public async Task<bool> AddUpdateToCartAsync(AddToCartRequest request, CancellationToken ct)
+        public async Task<bool> AddUpdateToCartAsync(AddToCartRequest addToCartRequest, CancellationToken ct)
         {
             //Check user FIRST
             var userExists = await _context.Users
-                .AnyAsync(u => u.UserId == request.UserId && u.UserType!.ToLower() == UserRole.buyer.ToString().ToLower(), ct);
+                .AnyAsync(u => u.UserId == addToCartRequest.UserId && u.UserType!.ToLower() == UserRole.buyer.ToString().ToLower(), ct);
 
             if (!userExists)
                 return false;
 
             //Get or create cart
             var cart = await _context.Cart
-                .FirstOrDefaultAsync(c => c.UserId == request.UserId, ct);
+                .FirstOrDefaultAsync(c => c.UserId == addToCartRequest.UserId, ct);
 
             if (cart == null)
             {
                 cart = new Cart
                 {
-                    UserId = request.UserId,
+                    UserId = addToCartRequest.UserId,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };
@@ -44,7 +43,7 @@ namespace ProductManagementApi.Repositories.ECart
 
             //Get product
             var product = await _context.Products
-                .FirstOrDefaultAsync(p => p.ProductId == request.ProductId, ct);
+                .FirstOrDefaultAsync(p => p.ProductId == addToCartRequest.ProductId, ct);
 
             if (product == null)
                 return false;
@@ -53,22 +52,22 @@ namespace ProductManagementApi.Repositories.ECart
             var item = await _context.CartItems
                 .FirstOrDefaultAsync(ci =>
                     ci.CartId == cart.CartId &&
-                    ci.ProductId == request.ProductId, ct);
+                    ci.ProductId == addToCartRequest.ProductId, ct);
 
             if (item != null)
             {
-                item.Quantity = request.Quantity;
+                item.Quantity = addToCartRequest.Quantity;
             }
             else
             {
-                var newItem = new CartItem
+                var cartItems = new CartItems
                 {
                     CartId = cart.CartId,
-                    ProductId = request.ProductId,
-                    Quantity = request.Quantity
+                    ProductId = addToCartRequest.ProductId,
+                    Quantity = addToCartRequest.Quantity
                 };
 
-                await _context.CartItems.AddAsync(newItem, ct);
+                await _context.CartItems.AddAsync(cartItems, ct);
             }
 
             cart.UpdatedAt = DateTime.UtcNow;
@@ -177,6 +176,10 @@ namespace ProductManagementApi.Repositories.ECart
             // IMPORTANT: We delete child records before parent
             // to avoid foreign key constraint errors
             _context.CartItems.RemoveRange(items);
+
+            // Save changes first
+            await _context.SaveChangesAsync(ct);
+
 
             // 🗑️ Step 4: Remove the cart itself (parent record)
             // Now safe because child records are already marked for deletion

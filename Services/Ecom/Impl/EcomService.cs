@@ -1,8 +1,5 @@
-﻿using ProductManagementApi.Models.DTO.AuthDto;
-using ProductManagementApi.Models.DTO.LoginceResponceDto;
-using ProductManagementApi.Models.DTO.ProductDto;
-using ProductManagementApi.Models.ProductModel;
-using ProductManagementApi.Models.user;
+﻿using ProductManagementApi.Models.Request;
+using ProductManagementApi.Models.Response;
 using ProductManagementApi.Repositories.Ecom;
 
 namespace ProductManagementApi.Services.Ecom.Impl
@@ -25,18 +22,17 @@ namespace ProductManagementApi.Services.Ecom.Impl
         {
             return await _ecomRepository.GetProductByIdAsync(id, cancellationToken);
         }
-        public async Task<ProductResponse> CreateProductAsync(ProductCreateDto dto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> CreateProductAsync(ProductCreateRequest productCreateRequest, CancellationToken cancellationToken)
         {
-            return await _ecomRepository.CreateProductAsync(dto, cancellationToken);
+            return await _ecomRepository.CreateProductAsync(productCreateRequest, cancellationToken);
         }
-        public async Task<ProductResponse?> UpdateProductAsync(ProductUpdateDto dto, CancellationToken cancellationToken)
+        public async Task<ProductResponse> UpdateProductAsync(ProductUpdateRequest productUpdateRequest, CancellationToken cancellationToken)
         {
-            return await _ecomRepository.UpdateProductAsync(dto, cancellationToken);
+            return await _ecomRepository.UpdateProductAsync(productUpdateRequest, cancellationToken);
         }
         public async  Task<bool> DeleteProductAsync(int id, CancellationToken cancellationToken)
         {
             return await _ecomRepository.DeleteProductAsync(id, cancellationToken);
-
         }
 
         public async Task<LoginResponce> LoginAsync(LoginRequest request, CancellationToken ct)
@@ -46,7 +42,7 @@ namespace ProductManagementApi.Services.Ecom.Impl
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request, CancellationToken ct)
         {
-            var user = new Users
+            var usersRequest = new UsersRequest
             {
                 Email = request.Email,
                 Password = request.Password,
@@ -54,7 +50,7 @@ namespace ProductManagementApi.Services.Ecom.Impl
                 Name = request.Name
             };
 
-            var created = await _ecomRepository.AddUserAsync(user, ct);
+            var created = await _ecomRepository.AddUserAsync(usersRequest, ct);
 
             return new AuthResponse
             {
@@ -64,7 +60,7 @@ namespace ProductManagementApi.Services.Ecom.Impl
             };
         }
 
-        public async Task<List<Product>> SearchProductAsync(string? search, CancellationToken ct)
+        public async Task<List<ProductResponse>> SearchProductAsync(string? search, CancellationToken ct)
         {
            return await _ecomRepository.SearchProductAsync(search, ct);
         }
